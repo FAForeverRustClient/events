@@ -77,6 +77,37 @@ repository secret here, and the server's guild id in `sources.json` with
 nothing, deliberately: a red run every six hours would train everybody to ignore
 it.
 
+### Tournaments are not mirrored
+
+A club announces its tournaments as scheduled events on its own server, and
+registers those same tournaments with FAF's tournament service. The client
+already draws that service's tournaments onto the calendar, so mirroring the
+Discord copy as well showed everybody **two squares for one tournament**.
+
+A scheduled event that links to a tournament on `tournaments.doodlepros.com/t/…`
+— in its description or in its location, which is where the signup address goes
+— is therefore left alone. The link is the marker rather than the name: "Average
+Joe Olympics #6" contains neither the word tournament nor the word cup.
+
+Two dials for what the link cannot see, both of them a commit here:
+
+```jsonc
+{
+  // Mirror tournaments anyway. For a server whose tournaments are not
+  // registered with FAF's tournament service and would otherwise be lost.
+  "mirrorTournaments": true,
+  "rules": [
+    // Do not mirror an event whose name contains this at all.
+    { "match": "dojo cup", "skip": true },
+    // Rules without `skip` still only choose a colour.
+    { "match": "cgn", "category": "cgn" }
+  ]
+}
+```
+
+The run summary of the mirror workflow says how many it left alone, and why:
+`FAF Dojo: 1 of 6 events, 5 already in the Tournaments tab`.
+
 ### What it does with a recurrence rule
 
 The catalogue understands "every N weeks" and "the same day every month". A
