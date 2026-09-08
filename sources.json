@@ -10,13 +10,13 @@
   "guilds": [
     {
       "_comment": [
-        "FAF Dojo. wlsn offered server-owner access on the issue thread, so the",
-        "id and the invite are theirs to fill in. Disabled until then: the bot",
-        "skips a guild with no id rather than failing.",
+        "FAF Dojo. The Dojo's 1v1 Night is a recurring scheduled event on that",
+        "server, which is exactly what this reads: no announcement parsing, and",
+        "no second place to keep the date up to date.",
         "",
-        "The Dojo's 1v1 Night is a recurring scheduled event on that server,",
-        "which is exactly what this reads: no announcement parsing, and no",
-        "second place to keep the date up to date."
+        "Enabled here means the bot asks Discord about it. It still needs the",
+        "bot invited to the server and DISCORD_BOT_TOKEN on this repository;",
+        "see DISCORD-SETUP.md."
       ],
       "guildId": "1216749954211516496",
       "enabled": true,

@@ -80,14 +80,21 @@ Send onwards: the **server id** and the **invite** to Part C.
 
 ## Part C: switch it on (write access to this repository)
 
-1. **Add the token.** Repository **Settings** → **Secrets and variables** →
-   **Actions** → **New repository secret**.
-   - Name: `DISCORD_BOT_TOKEN`
+1. **Add the token.** On **this** repository, `FAForeverRustClient/events`:
+   <https://github.com/FAForeverRustClient/events/settings/secrets/actions> →
+   **New repository secret**.
+   - Name: `DISCORD_BOT_TOKEN`, spelled exactly that way.
    - Value: the token from Part A.
 
-   GitHub will not show it again, and it is not readable by anyone who can only
-   read this repository. If it ever leaks, Part A can press **Reset Token** and
-   the old one dies immediately.
+   Both halves of that matter, and getting either wrong is silent. A secret on
+   the **client** repository is not visible to a workflow in this one: they do
+   not share secrets, and nothing warns you. A secret under **another name** is
+   not read either. `gh secret list --repo FAForeverRustClient/events` prints
+   the names it can actually see, which is the quickest way to check.
+
+   GitHub will not show the value again, and it is not readable by anyone who
+   can only read this repository. If it ever ends up somewhere it should not,
+   Part A can press **Reset Token** and the old one dies immediately.
 2. **Add the server** to [`sources.json`](sources.json):
 
    ```json
@@ -124,8 +131,24 @@ From then on it runs by itself, four times a day.
 
 ## When something is not there
 
-**The workflow says "DISCORD_BOT_TOKEN is not set; skipping".** Part C step 1
-has not been done, or the secret is named something else.
+**The run is green and the summary says "The mirror did nothing".** The token
+is not where the workflow looks. Three ways to get there:
+
+- It was added to the **client** repository rather than to this one. Secrets do
+  not cross repositories, and this is the easy mistake to make because both
+  repositories are involved in the job.
+- It was added under **another name**. The workflow reads `DISCORD_BOT_TOKEN`
+  and nothing else.
+- It was added as an **environment** or **Dependabot** secret. It has to be a
+  repository secret under **Actions**.
+
+`gh secret list --repo FAForeverRustClient/events` settles all three: it prints
+the names this workflow can see. An empty list means Part C step 1 has not
+landed here.
+
+A run started by hand now fails rather than passing quietly, so this shows up
+as a red cross the moment you press the button. The cron still warns and stays
+green on purpose.
 
 **It says "No enabled guilds".** Part C step 2 has not been done, or `enabled`
 is still `false`, or `guildId` is empty.

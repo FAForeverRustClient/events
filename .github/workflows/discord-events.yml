@@ -1,9 +1,15 @@
 name: Mirror Discord scheduled events
 
 # Reads the guild scheduled events of every server listed in sources.json and
-# writes them into calendar.json. See the README for what it takes to enable a
-# server; until a server is enabled and DISCORD_BOT_TOKEN exists, this runs and
-# does nothing on purpose.
+# writes them into calendar.json. See DISCORD-SETUP.md for what it takes to
+# enable a server.
+#
+# A missing token is handled differently depending on who asked. On the cron it
+# is a warning and a green run: the schedule exists before anybody has
+# necessarily configured a server, and a red cross every six hours teaches
+# everybody to ignore the job. On a run somebody started by hand it is an
+# error, because they pressed the button expecting something to happen, and a
+# green tick over "skipping" is how that went unnoticed for an afternoon.
 
 on:
   schedule:
@@ -18,7 +24,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: discord-events
+  group: calendar-write
   cancel-in-progress: false
 
 jobs:
@@ -46,12 +52,54 @@ jobs:
       - name: Read the scheduled events
         env:
           DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
-        run: node .client/scripts/events-bot.mjs --sources sources.json --calendar calendar.json
+          BY_HAND: ${{ github.event_name == 'workflow_dispatch' }}
+        run: |
+          if [ -z "$DISCORD_BOT_TOKEN" ]; then
+            message="DISCORD_BOT_TOKEN is not set on this repository (FAForeverRustClient/events). Add it under Settings, Secrets and variables, Actions, New repository secret, with exactly that name. A secret on another repository, or under another name, is not visible to this workflow. See DISCORD-SETUP.md, part C."
+            {
+              echo "### The mirror did nothing"
+              echo
+              echo "$message"
+            } >> "$GITHUB_STEP_SUMMARY"
+            if [ "$BY_HAND" = "true" ]; then
+              echo "::error::$message"
+              exit 1
+            fi
+            echo "::warning::$message"
+            exit 0
+          fi
+
+          if ! node .client/scripts/events-bot.mjs \
+            --sources sources.json --calendar calendar.json > .mirror.log 2>&1; then
+            cat .mirror.log
+            {
+              echo "### The mirror failed"
+              echo
+              echo '```'
+              cat .mirror.log
+              echo '```'
+              echo
+              echo "The troubleshooting list at the bottom of DISCORD-SETUP.md covers every answer Discord gives here."
+            } >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+          cat .mirror.log
+          # On the run page rather than only in the log: "0 events" is a real
+          # answer and worth being able to see without opening a job.
+          {
+            echo "### What the mirror found"
+            echo
+            echo '```'
+            cat .mirror.log
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          rm -f .mirror.log
 
       - name: Commit what changed
         run: |
           if git diff --quiet -- calendar.json; then
             echo "The calendar is already up to date."
+            echo "The calendar was already up to date." >> "$GITHUB_STEP_SUMMARY"
             exit 0
           fi
           git config user.name "faf-events-bot"
