@@ -18,12 +18,12 @@
         "which is exactly what this reads: no announcement parsing, and no",
         "second place to keep the date up to date."
       ],
-      "guildId": "",
-      "enabled": false,
+      "guildId": "1216749954211516496",
+      "enabled": true,
       "host": "FAF Dojo",
       "origin": "community",
       "category": "meetup",
-      "invite": "",
+      "invite": "https://discord.com/invite/zkRdvhfmDC",
       "rules": [
         { "match": "tournament", "category": "tournament" },
         { "match": "cup", "category": "tournament" },
