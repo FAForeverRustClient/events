@@ -1,5 +1,5 @@
 {
-  "submitUrl": "https://github.com/FAForeverRustClient/events/issues/new/choose",
+  "submitUrl": "https://github.com/FAForeverRustClient/events/issues/new",
   "events": [
     {
       "id": "ladder-pool-rotation",

@@ -1,0 +1,145 @@
+name: Event submissions
+
+# Turns a submitted issue into a calendar entry, in two steps.
+#
+# On every issue: check the entry and say so, so the person submitting finds out
+# in a minute rather than whenever a maintainer next looks.
+#
+# On the `approved` label: commit it and close the issue. A label rather than
+# every issue, on purpose. Automating the *transcription* is the whole point of
+# this: nobody should be retyping a UTC timestamp out of prose. Automating the
+# *decision* would mean anybody who can open an issue can put anything on every
+# player's calendar, and one click by a maintainer is a small price for that not
+# being true.
+
+on:
+  issues:
+    types: [opened, edited, labeled]
+
+jobs:
+  check:
+    # Only an issue carrying an entry. A hand-written one is a fine submission
+    # and needs a person, not a robot telling it off.
+    if: >
+      github.event.action != 'labeled'
+      && contains(github.event.issue.body, '```json')
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check out the client, for the submission reader
+        uses: actions/checkout@v4
+        with:
+          repository: FAForeverRustClient/FAForeverRustClient
+          ref: develop
+          path: .client
+          sparse-checkout: scripts
+          sparse-checkout-cone-mode: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      # Through the environment, never interpolated into the shell: an issue
+      # body is text a stranger wrote.
+      - name: Save the issue body
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: printf '%s' "$ISSUE_BODY" > .submission.md
+
+      - name: Read the entry
+        id: read
+        continue-on-error: true
+        run: |
+          node .client/scripts/events-submission.mjs \
+            --body-file .submission.md --calendar calendar.json --dry-run > .result.txt 2> .error.txt
+
+      - name: Say what it found
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NUMBER: ${{ github.event.issue.number }}
+        run: |
+          if [ "${{ steps.read.outcome }}" = "success" ]; then
+            {
+              echo "The entry in this issue reads cleanly. A maintainer adding the"
+              echo "\`approved\` label will commit it to \`calendar.json\` and close this issue."
+            } > .comment.md
+          else
+            {
+              echo "This submission cannot be applied yet:"
+              echo
+              echo '```'
+              cat .error.txt
+              echo '```'
+              echo
+              echo "Edit the \`json\` block above and this check runs again."
+            } > .comment.md
+          fi
+          gh issue comment "$NUMBER" --body-file .comment.md
+
+  apply:
+    if: >
+      github.event.action == 'labeled'
+      && github.event.label.name == 'approved'
+      && contains(github.event.issue.body, '```json')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+    concurrency:
+      group: calendar-write
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check out the client, for the submission reader
+        uses: actions/checkout@v4
+        with:
+          repository: FAForeverRustClient/FAForeverRustClient
+          ref: develop
+          path: .client
+          sparse-checkout: scripts
+          sparse-checkout-cone-mode: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Save the issue body
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: printf '%s' "$ISSUE_BODY" > .submission.md
+
+      - name: Apply it to the calendar
+        run: |
+          node .client/scripts/events-submission.mjs \
+            --body-file .submission.md --calendar calendar.json > .result.txt
+          cat .result.txt
+
+      - name: Commit, comment and close
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NUMBER: ${{ github.event.issue.number }}
+        run: |
+          rm -f .submission.md
+          result=$(cat .result.txt)
+          rm -f .result.txt
+          case "$result" in
+            "NO_BLOCK"*)
+              gh issue comment "$NUMBER" --body "There is no entry block in this issue, so there is nothing to apply."
+              exit 0
+              ;;
+            "UNCHANGED"*)
+              gh issue comment "$NUMBER" --body "That entry is already on the calendar. Nothing to do."
+              gh issue close "$NUMBER" --reason completed
+              exit 0
+              ;;
+          esac
+          git config user.name "faf-events-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "feat(calendar): ${result#ADDED } (#${NUMBER})" -- calendar.json
+          git push
+          gh issue comment "$NUMBER" --body "On the calendar as \`${result#ADDED }\`. Every client picks it up on its next visit to the Events tab."
+          gh issue close "$NUMBER" --reason completed

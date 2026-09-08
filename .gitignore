@@ -1,0 +1,6 @@
+# Scratch files the submission workflow writes and never commits.
+.submission.md
+.result.txt
+.error.txt
+.comment.md
+.client/

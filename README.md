@@ -20,14 +20,31 @@ tournaments come from FAF's tournament service and patches from the changelog
 index, and they appear on the calendar on their own. Adding them here would
 show everybody two of each.
 
-## Adding an event by hand
+## Adding an event
 
-Open an issue with the event form, or send a pull request against
-`calendar.json` directly. The smallest useful entry is three fields:
+### From the client
+
+The Events tab has a **Suggest an event** button. Fill the form in, in your own
+time zone, and it opens an issue here with the finished catalogue entry already
+in it: converted to UTC, correctly spelled, nothing to retype. You press submit.
+
+A check runs on the issue within a minute and comments whether the entry reads
+cleanly. A maintainer then adds the **`approved`** label, and that commits it to
+`calendar.json` and closes the issue. Every client picks it up on its next visit
+to the tab.
+
+The label is the one step that is not automated, on purpose. Automating the
+transcription is the point; automating the *decision* would mean anybody who can
+open an issue can put anything on every player's calendar.
+
+### By hand
+
+Open an issue with the event template and fill in the `json` block, or send a
+pull request against `calendar.json` directly. The smallest useful entry is two
+fields:
 
 ```json
 {
-  "id": "cgn-43",
   "title": "Community Game Night 43",
   "startsAt": "2026-10-04T18:00:00Z"
 }
@@ -35,7 +52,8 @@ Open an issue with the event form, or send a pull request against
 
 Write times in **UTC**. The client converts them to each reader's own zone. A
 bare date (`2026-10-04`) means a whole day and is never converted, which is what
-a patch release wants.
+a patch release wants. An issue with no `json` block in it is left alone for a
+maintainer rather than refused.
 
 ## The Discord bot
 
@@ -50,18 +68,14 @@ intent, and nothing the bot sees is anybody's conversation.
 
 ### Enabling a server
 
-1. **Invite the bot.** Discord developer portal, OAuth2 URL generator, scope
-   `bot`, no permissions ticked. Reading a guild's scheduled events needs
-   `View Channels`, which the default role already has; **Manage Events** is a
-   write permission and is deliberately not requested.
-2. **Add the token.** Repository settings, Secrets and variables, Actions, a new
-   secret named `DISCORD_BOT_TOKEN`. Only somebody with write access here can do
-   this, and nobody else can read it back.
-3. **Fill in the server.** Its guild id and invite in `sources.json`, and
-   `enabled` set to `true`.
+Step by step, including the parts that belong to whoever runs the Discord
+server rather than to this repository: **[`DISCORD-SETUP.md`](DISCORD-SETUP.md)**.
 
-Until step 2 and step 3 are both done the workflow runs and does nothing,
-deliberately: a red run every six hours would train everybody to ignore it.
+The short version is three things: the bot invited to the server, its token as a
+repository secret here, and the server's guild id in `sources.json` with
+`enabled` set to `true`. Until all three are done the workflow runs and does
+nothing, deliberately: a red run every six hours would train everybody to ignore
+it.
 
 ### What it does with a recurrence rule
 
@@ -84,3 +98,8 @@ mapping rather than two that drift.
 an entry without a title or a start, or a link that is not plain `https`. The
 client reads this document leniently (one bad entry is dropped rather than
 emptying the tab), so a mistake here is quiet: the check is what makes it loud.
+
+A submission may not claim an id beginning with `discord-`: those belong to the
+bot, and the next mirror run would overwrite it anyway. An id already in the
+document gets a suffix rather than replacing what is there, so no submission can
+edit somebody else's entry.
