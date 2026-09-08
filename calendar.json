@@ -23,25 +23,6 @@
       "recurrence": "monthly"
     },
     {
-      "id": "discord-1216749954211516496-1541378764334829708",
-      "title": "Average Joe Olympics #6 - 2v2",
-      "summary": "Details & Signup: - Details & Signup: [Tournament Page](https://tournaments.doodlepros.com/t/2910276f77) - Rewards: $100 + Dojo Avatars - Ratings: u1650 Individual | u3000 Combined - Format: Single Elimination | Best Of Three - About: The “Average Joe Olympics” are our mid-level…",
-      "category": "meetup",
-      "origin": "community",
-      "host": "FAF Dojo",
-      "startsAt": "2026-09-26T14:00:00+00:00",
-      "links": [
-        {
-          "label": "Event on Discord",
-          "url": "https://discord.com/events/1216749954211516496/1541378764334829708"
-        },
-        {
-          "label": "Join FAF Dojo",
-          "url": "https://discord.com/invite/zkRdvhfmDC"
-        }
-      ]
-    },
-    {
       "id": "ladder-pool-rotation",
       "title": "Ladder map pool rotation",
       "summary": "The 1v1 ladder pool changes at the start of the month. Which maps come in is announced when it happens.",
@@ -51,87 +32,6 @@
       "startsAt": "2026-10-01",
       "allDay": true,
       "recurrence": "monthly"
-    },
-    {
-      "id": "discord-1216749954211516496-1543955296232275988",
-      "title": "The Brawl 2026",
-      "summary": "Details & Signup: - Details & Signup: [u1100 Bracket](https://tournaments.doodlepros.com/t/a04f7fb779) | [u1700 Bracket](https://tournaments.doodlepros.com/t/0ad4afff24) | [1700+ Bracket](https://tournaments.doodlepros.com/t/536326f557) - Rewards: $100 (1700+), $75 (u1700), $50…",
-      "category": "meetup",
-      "origin": "community",
-      "host": "FAF Dojo",
-      "startsAt": "2026-10-10T14:00:00+00:00",
-      "links": [
-        {
-          "label": "Event on Discord",
-          "url": "https://discord.com/events/1216749954211516496/1543955296232275988"
-        },
-        {
-          "label": "Join FAF Dojo",
-          "url": "https://discord.com/invite/zkRdvhfmDC"
-        },
-        {
-          "label": "Where",
-          "url": "https://tournaments.doodlepros.com/"
-        }
-      ],
-      "endsAt": "2026-10-10T19:00:00+00:00"
-    },
-    {
-      "id": "discord-1216749954211516496-1543951816260190318",
-      "title": "Super-Noob Olympics #9 - 3v3",
-      "summary": "Details & Signup: - Please note: the rating requirements differ from the usual ones! - Details & Signup: [Tournament Page](https://tournaments.doodlepros.com/t/b7055a2e5d) - Rewards: $150 + Dojo Avatars - Ratings: u1350 Individual | u3750 Combined - Format: Single Elimination |…",
-      "category": "meetup",
-      "origin": "community",
-      "host": "FAF Dojo",
-      "startsAt": "2026-10-24T14:00:00+00:00",
-      "links": [
-        {
-          "label": "Event on Discord",
-          "url": "https://discord.com/events/1216749954211516496/1543951816260190318"
-        },
-        {
-          "label": "Join FAF Dojo",
-          "url": "https://discord.com/invite/zkRdvhfmDC"
-        }
-      ]
-    },
-    {
-      "id": "discord-1216749954211516496-1543951147759440012",
-      "title": "Average Joe Olympics #7 - 3v3",
-      "summary": "Details & Signup: - Please note: Start time differs from the usual one! - Details & Signup: [Tournament Page](https://tournaments.doodlepros.com/t/4b57242bc1) - Rewards: $150 + Dojo Avatars - Ratings: u1650 Individual | u4500 Combined - Format: Single Elimination | Best Of Three…",
-      "category": "meetup",
-      "origin": "community",
-      "host": "FAF Dojo",
-      "startsAt": "2026-11-28T20:00:00+00:00",
-      "links": [
-        {
-          "label": "Event on Discord",
-          "url": "https://discord.com/events/1216749954211516496/1543951147759440012"
-        },
-        {
-          "label": "Join FAF Dojo",
-          "url": "https://discord.com/invite/zkRdvhfmDC"
-        }
-      ]
-    },
-    {
-      "id": "discord-1216749954211516496-1543953200934293554",
-      "title": "Super-Noob Olympics #10 - 2v2",
-      "summary": "Details & Signup: - Please note: Start time differs from the usual one! - Details & Signup: [Tournament Page](https://tournaments.doodlepros.com/t/0266874c93) - Rewards: $100 + Dojo Avatars - Ratings: u1250 Individual | u2200 Combined - Format: Single Elimination | Best Of Three…",
-      "category": "meetup",
-      "origin": "community",
-      "host": "FAF Dojo",
-      "startsAt": "2026-12-12T20:00:00+00:00",
-      "links": [
-        {
-          "label": "Event on Discord",
-          "url": "https://discord.com/events/1216749954211516496/1543953200934293554"
-        },
-        {
-          "label": "Join FAF Dojo",
-          "url": "https://discord.com/invite/zkRdvhfmDC"
-        }
-      ]
     }
   ]
 }
