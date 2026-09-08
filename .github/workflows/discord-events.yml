@@ -1,0 +1,60 @@
+name: Mirror Discord scheduled events
+
+# Reads the guild scheduled events of every server listed in sources.json and
+# writes them into calendar.json. See the README for what it takes to enable a
+# server; until a server is enabled and DISCORD_BOT_TOKEN exists, this runs and
+# does nothing on purpose.
+
+on:
+  schedule:
+    # Four times a day, off the hour. An event added on Discord this morning is
+    # on the calendar by the afternoon, and the cron does not join the crowd of
+    # jobs everybody schedules on the hour.
+    - cron: "17 1,7,13,19 * * *"
+  workflow_dispatch:
+
+# The only write this job makes is the commit below.
+permissions:
+  contents: write
+
+concurrency:
+  group: discord-events
+  cancel-in-progress: false
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # The bot lives with the calendar format it writes, and with its tests.
+      # `develop` rather than `main`: the format and the bot change together
+      # there, and this job writes data rather than shipping code.
+      - name: Check out the client, for the bot
+        uses: actions/checkout@v4
+        with:
+          repository: FAForeverRustClient/FAForeverRustClient
+          ref: develop
+          path: .client
+          sparse-checkout: scripts
+          sparse-checkout-cone-mode: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Read the scheduled events
+        env:
+          DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
+        run: node .client/scripts/events-bot.mjs --sources sources.json --calendar calendar.json
+
+      - name: Commit what changed
+        run: |
+          if git diff --quiet -- calendar.json; then
+            echo "The calendar is already up to date."
+            exit 0
+          fi
+          git config user.name "faf-events-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "chore(calendar): refresh the Discord scheduled events" -- calendar.json
+          git push

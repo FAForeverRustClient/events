@@ -1,0 +1,77 @@
+name: Add an event
+description: Something happening in FAF that belongs on the client's calendar.
+title: "Event: "
+labels: ["event"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Tournaments and released patches are already on the calendar without
+        anybody adding them: the client reads those from FAF's own services.
+        This form is for everything else, which is anything only a person knows.
+
+        If the event is a recurring scheduled event on a Discord server, say so
+        below: the bot can mirror the whole series instead, and then nobody has
+        to keep the date up to date twice.
+  - type: input
+    id: title
+    attributes:
+      label: What is it called
+      placeholder: Community Game Night 43
+    validations:
+      required: true
+  - type: input
+    id: starts
+    attributes:
+      label: When does it start, in UTC
+      description: >
+        A timestamp (2026-10-04T18:00:00Z), or just a date (2026-10-04) if it is
+        a whole day rather than a moment. UTC please: the client converts it to
+        each reader's own time zone.
+      placeholder: 2026-10-04T18:00:00Z
+    validations:
+      required: true
+  - type: input
+    id: ends
+    attributes:
+      label: When does it end, in UTC
+      description: Optional. Worth giving for anything somebody might join late.
+  - type: dropdown
+    id: category
+    attributes:
+      label: What kind of thing is it
+      options:
+        - Community Game Night
+        - Meetup or game night
+        - Tournament
+        - Patch
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: host
+    attributes:
+      label: Who is running it
+      placeholder: FAF Dojo
+  - type: textarea
+    id: summary
+    attributes:
+      label: One or two sentences
+      description: Plain text. The calendar renders no formatting.
+  - type: textarea
+    id: links
+    attributes:
+      label: Links
+      description: >
+        One per line, as "label: https://...". A Discord invite, the rules, the
+        stream. Plain https addresses only.
+      placeholder: |
+        Join the Discord: https://discord.gg/example
+  - type: input
+    id: recurring
+    attributes:
+      label: Does it repeat
+      description: >
+        "Every week", "every other week", or "the 1st of every month" are the
+        three the calendar can express. Say if it is a recurring event on a
+        Discord server and which one.

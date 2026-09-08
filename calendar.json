@@ -1,0 +1,16 @@
+{
+  "submitUrl": "https://github.com/FAForeverRustClient/events/issues/new/choose",
+  "events": [
+    {
+      "id": "ladder-pool-rotation",
+      "title": "Ladder map pool rotation",
+      "summary": "The 1v1 ladder pool changes at the start of the month. Which maps come in is announced when it happens.",
+      "category": "ladderPool",
+      "origin": "official",
+      "host": "FAForever",
+      "startsAt": "2026-10-01",
+      "allDay": true,
+      "recurrence": "monthly"
+    }
+  ]
+}

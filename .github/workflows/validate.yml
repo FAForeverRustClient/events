@@ -1,0 +1,62 @@
+name: Validate the calendar
+
+# The client reads this document leniently: one malformed entry is dropped
+# rather than emptying somebody's Events tab. That is right for a file edited by
+# hand and it makes a mistake silent, so this is where a mistake is made loud.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: calendar.json and sources.json parse, and every entry is usable
+        run: |
+          node --input-type=module <<'NODE'
+          import { readFile } from "node:fs/promises";
+
+          const problems = [];
+          const calendar = JSON.parse(await readFile("calendar.json", "utf8"));
+          const sources = JSON.parse(await readFile("sources.json", "utf8"));
+
+          const ids = new Set();
+          for (const [index, event] of (calendar.events ?? []).entries()) {
+            const where = `events[${index}] (${event.id ?? "no id"})`;
+            if (!event.title?.trim()) problems.push(`${where}: no title`);
+            if (!event.startsAt) problems.push(`${where}: no startsAt`);
+            else if (Number.isNaN(Date.parse(event.startsAt))) {
+              problems.push(`${where}: startsAt is not a date or a timestamp`);
+            }
+            if (event.id) {
+              if (ids.has(event.id)) problems.push(`${where}: duplicate id`);
+              ids.add(event.id);
+            }
+            for (const link of event.links ?? []) {
+              if (!String(link.url ?? "").startsWith("https://")) {
+                problems.push(`${where}: link "${link.url}" is not plain https`);
+              }
+            }
+          }
+          for (const [index, guild] of (sources.guilds ?? []).entries()) {
+            if (guild.enabled && !guild.guildId) {
+              problems.push(`guilds[${index}]: enabled with no guildId`);
+            }
+          }
+
+          if (problems.length > 0) {
+            console.error(`::error::${problems.length} problem(s):`);
+            for (const problem of problems) console.error(problem);
+            process.exitCode = 1;
+          } else {
+            console.log(`${(calendar.events ?? []).length} events, all usable.`);
+          }
+          NODE
