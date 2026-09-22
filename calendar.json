@@ -2,31 +2,6 @@
   "submitUrl": "https://github.com/FAForeverRustClient/events/issues/new",
   "events": [
     {
-      "id": "discord-1216749954211516496-1547618394470092890",
-      "title": "Wilson's Therapy Group",
-      "summary": "- FAF Dojo training group for beginners (up to ~1200 rating) - Training sessions take place on Tuesday, Wednesday and Thursday in the EU evening hours - Revolves mostly around small team games, features some 1v1 - Trainers: Quimma and Wilson If you want to join this group for a…",
-      "category": "meetup",
-      "origin": "community",
-      "host": "FAF Dojo",
-      "startsAt": "2026-09-22T19:00:00+00:00",
-      "links": [
-        {
-          "label": "Event on Discord",
-          "url": "https://discord.com/events/1216749954211516496/1547618394470092890"
-        },
-        {
-          "label": "Join FAF Dojo",
-          "url": "https://discord.com/invite/zkRdvhfmDC"
-        }
-      ],
-      "endsAt": "2026-09-22T21:59:00+00:00",
-      "recurrence": {
-        "weekly": {
-          "interval": 1
-        }
-      }
-    },
-    {
       "id": "discord-1216749954211516496-1547619381549338674",
       "title": "Wilson's Therapy Group",
       "summary": "- FAF Dojo training group for beginners (up to ~1200 rating) - Training sessions take place on Tuesday, Wednesday and Thursday in the EU evening hours - Revolves mostly around small team games, features some 1v1 - Trainers: Quimma and Wilson If you want to join this group for a…",
@@ -70,6 +45,31 @@
         }
       ],
       "endsAt": "2026-09-24T21:59:00+00:00",
+      "recurrence": {
+        "weekly": {
+          "interval": 1
+        }
+      }
+    },
+    {
+      "id": "discord-1216749954211516496-1547618394470092890",
+      "title": "Wilson's Therapy Group",
+      "summary": "- FAF Dojo training group for beginners (up to ~1200 rating) - Training sessions take place on Tuesday, Wednesday and Thursday in the EU evening hours - Revolves mostly around small team games, features some 1v1 - Trainers: Quimma and Wilson If you want to join this group for a…",
+      "category": "meetup",
+      "origin": "community",
+      "host": "FAF Dojo",
+      "startsAt": "2026-09-29T19:00:00+00:00",
+      "links": [
+        {
+          "label": "Event on Discord",
+          "url": "https://discord.com/events/1216749954211516496/1547618394470092890"
+        },
+        {
+          "label": "Join FAF Dojo",
+          "url": "https://discord.com/invite/zkRdvhfmDC"
+        }
+      ],
+      "endsAt": "2026-09-29T21:59:00+00:00",
       "recurrence": {
         "weekly": {
           "interval": 1
